@@ -11,7 +11,6 @@ RUN apt-get -y update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-
 # Fix certificate issues
 RUN apt-get update && \
     apt-get install ca-certificates-java && \

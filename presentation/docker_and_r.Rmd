@@ -11,6 +11,14 @@ output:
 
 ---
 
+# Docker & R
+
+repo: [github.com/andrewbtran/docker_sample_project](https://github.com/andrewbtran/docker_sample_project)
+
+slides: [andrewbtran.github.io/docker_sample_project/presentation/docker_and_r.html](andrewbtran.github.io/docker_sample_project/presentation/docker_and_r_slides.html)
+
+doc: [andrewbtran.github.io/docker_sample_project/presentation/docker_and_r.html](andrewbtran.github.io/docker_sample_project/presentation/docker_and_r_doc.html)
+
 # What's the point of an R server?
 
 You can host: 
@@ -83,7 +91,6 @@ Washington Post Python data munging + R modeling + Plumber API = Live election p
 * One-stop-shop foor storage, domains, and can reserve a [floating IP address](https://www.digitalocean.com/docs/networking/floating-ips/)
 * Sync with [Dropbox Linux](https://www.dropbox.com/install-linux) for easier file exchange
 
-
 **AWS (or whatever your news org uses)**
 
 * Engineering experts to help
@@ -106,26 +113,25 @@ More specific instructions [here](https://www.dfoster.science/post/r-on-digital-
 ## Steps for setting up an R server on Digital Ocean
 
 * Access Droplet via Command Line
-  * Download, install, and run the PuTTY SSH client
-  * Configure PuTTY session with proper SSH credentials
-  * Log into droplet
+  * Configure proper SSH credentials via root access
 
 * More SysAdmin tasks
   * Set up non-root user with ssh login that has sudo privileges
   * Set up SSL certificates
-  * Write the configuration Caddyfile for ports, prooxies, websockets, etc)
+  * Write the configuration Caddyfile for ports, proxies, websockets, etc)
   
 ## Steps for setting up an R server on Digital Ocean
 
 * More SysAdmin tasks to install R
   * from the command line, download and install R
 
-`$ sudo add-apt-repository 'deb `
-`https://cloud.r-project.org/bin/linux/ubuntu focal-cran40/'`
+```
+$ sudo add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu focal-cran40/'
   
-`$ sudo apt update`
+$ sudo apt update
 
-`$ sudo apt install r-base`
+$ sudo apt install r-base
+```
 
 More specific instructions [here](https://www.dfoster.science/post/r-on-digital-ocean/)
 
@@ -135,8 +141,10 @@ Create/Organize your folders through the command line
 
 Copy a local file to your server:
 
-`$ scp depends.R remote_username@10.10.0.2:/remote/directory`
-`$ Rscript depends.R`
+```
+$ scp depends.R remote_username@10.10.0.2:/remote/directory
+$ Rscript depends.R
+```
 
 ![shinyio](images/depends.png)
 
@@ -166,7 +174,7 @@ Brewing and drinking beer
 
 1. You can easily pour many “replicas” of the same beer.
 2. The bartender (a server, in computer terms), is decoupled from the beer we want - we don’t have to go to the brewer and brew a new beer each time we want a pint.
-3.As a result, the same bartender can offer many different types of beers
+3. As a result, the same bartender can offer many different types of beers
 
 ![docker](images/docker_flow.png)
 
@@ -185,21 +193,13 @@ Brewing and drinking beer
 
 ## System Dependencies
 
-![docker_sys](images/docker_flow.png)
+![docker_sys](images/docker_sys.png)
+
 ## The directory
 
 ![files](images/files.png)
 
-## R packages
-
-```
-WORKDIR /srv/shiny-server
-
-COPY depends.R /srv/shiny-server/
-RUN Rscript depends.R
-```
-
-## Code and data
+## R packages, Code and Data
  
 ![docker_code](images/docker_code.png)
  
@@ -214,7 +214,7 @@ RUN Rscript depends.R
 3. Build out project
 
 ```
-docker build -t docker_sample_project .
+$ docker build -t docker_sample_project .
 ```
 
 ## Run Docker locally
@@ -239,6 +239,8 @@ docker-compose down && docker-compose rm && docker-compose up --force-recreate -
 
 ## Host docker locally
 
+You can quickly figure out the local hosting address through your Docker Desktop App.
+
 ![docker_browse](images/dockerbrowse.png)
 
 ## Host docker locally
@@ -247,12 +249,80 @@ docker-compose down && docker-compose rm && docker-compose up --force-recreate -
 
 # Host docker online
 
-Create a Docker Droplet
+Upload repo to Github
 
-[![shiny_local](images/dropolet_docker.png)](https://marketplace.digitalocean.com/apps/docker)
+[![github](images/github.png)](https://github.com/andrewbtran/docker_sample_project)
 
-# Host docker online
+## Sign up for an account on hub.docker.com
 
-Create a Docker Droplet
+[![docker](images/docker1.jpg)](https://hub.docker.com)
+
+
+## Create a Docker Repository
+
+[![github](images/create_docker_hub.png)](https://hub.docker.com)
+
+
+## Connect your Github and Docker repos
+
+Let it start building.
+
+[![github](images/link_github.png)](https://hub.docker.com)
+
+## Builds now connected to Github activity
+
+[![docker_build_online](images/docker_build_online.png)](https://hub.docker.com)
+
+
+## Create a Docker Droplet on Digital Ocean
+
+Or follow the instructions on whatever hosting platform (Heroku, AWS, Cloud Run) you use to install Docker.
+
+[![shiny_local](images/droplet_docker.png)](https://marketplace.digitalocean.com/apps/docker)
+
+## Create a Docker Droplet
 
 [![signup](images/signup.png)](https://marketplace.digitalocean.com/apps/docker)
+
+## SSH into server
+
+```
+$ ssh root@xxx.xx.xxx.x
+```
+
+## Deploy docker container
+
+Make sure the R server processes are running after ending ssh session
+
+```
+$ tmux
+$ docker run --rm -p 80:3838 abtran/docker_sample_project:latest
+```
+
+![deploy](images/deploy.png)
+
+## Deploy docker container
+
+Carefully exit the server.
+
+Leave/detach the `tmux` session by typing `Ctrl`+`b` and then `d`
+
+Visit your page online (in your hosting you can point it a domain name, etc).
+
+![final](images/final.png)
+
+## Need to manually re deploy after every Github update
+
+If you want to update later, ssh into your server and type
+
+```
+$ tmux attach
+$ docker run --rm -p 80:3838 abtran/docker_sample_project:latest
+```
+
+Leave/detach the `tmux` concurrent session by typing `Ctrl`+`b` and then `d`
+
+# That's it!
+
+![docker_file](images/docker_file.png)
+
