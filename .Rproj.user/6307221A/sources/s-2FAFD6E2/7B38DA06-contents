@@ -1,0 +1,49 @@
+---
+title: "fatal force notebook"
+author: "Andrew Ba Tran"
+date: "5/9/2021"
+output: html_document
+---
+
+## Load libaries and data
+
+```{r setup, warning=F, message=F}
+packages <- c("tidyverse", "lubridate", "geofacet", "DT")
+
+if (length(setdiff(packages, rownames(installed.packages()))) > 0) {
+  install.packages(setdiff(packages, rownames(installed.packages())), repos = "http://cran.us.r-project.org")  
+}
+
+library(tidyverse)
+library(lubridate)
+library(geofacet)
+library(DT)
+
+ff <- read_csv("https://github.com/washingtonpost/data-police-shootings/raw/master/fatal-police-shootings-data.csv")
+```
+
+## Do your analysis
+
+```{r annual_states_chart, fig.width=9, fig.height=7}
+ff_state_annual <- ff %>% 
+  mutate(year=year(date)) %>% 
+  count(year, state, name="total")
+
+ff_state_annual %>% 
+  filter(year!=2021) %>% 
+  ggplot(aes(x=year, y=total)) +
+  geom_col() +
+  theme_minimal() +
+  facet_geo(~state, scale="free_y") +
+  labs(title="Police shootings over time",
+       caption="Data: The Washington Post")
+```
+
+
+```{r annual_states_table}
+ff_state_annual %>% 
+  pivot_wider(names_from="year", values_from="total") %>% 
+  datatable(extensions = 'Buttons', 
+            options = list(dom = 'Bfrtip',
+                           buttons = c('copy', 'csv', 'excel','pdf')))
+```

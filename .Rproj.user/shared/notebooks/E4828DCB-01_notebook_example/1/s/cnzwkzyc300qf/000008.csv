@@ -1,0 +1,5 @@
+"0","ff_state_annual %>% "
+"0","  pivot_wider(names_from=""year"", values_from=""total"") %>% "
+"0","  datatable(extensions = 'Buttons', "
+"0","            options = list(dom = 'Bfrtip',"
+"0","                           buttons = c('copy', 'csv', 'excel','pdf')))"
